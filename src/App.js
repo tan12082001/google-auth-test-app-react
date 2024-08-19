@@ -1,13 +1,22 @@
-import logo from './logo.svg';
 import './App.css';
+import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import UserList from './components/UserList';
+import Login from './components/Login';
+import { useSelector } from 'react-redux';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
-function App() {
+const App = () => {
+  const user = useSelector((state) => state.user.user);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-      </header>
-    </div>
+    <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+      <Router>
+        <Routes>
+          <Route path="/" element={user ? <Navigate to="/users" /> : <Login />} />
+          <Route path="/users" element={user ? <UserList /> : <Navigate to="/" />} />
+        </Routes>
+      </Router>
+    </GoogleOAuthProvider>
   );
 }
 
